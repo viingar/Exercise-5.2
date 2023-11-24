@@ -20,14 +20,14 @@ public class PersonController {
     private PersonRepository repository;
     @Autowired
     private RestTemplate restTemplate;
-    @Value("${person.url}")
+    @Value("${url}")
     private String url;
 
     @GetMapping("{id}/weather")
     public ResponseEntity<Weather> getWeather(@PathVariable int id) {
         if (repository.existsById(id)) {
             String location = repository.findById(id).get().getLocation();
-            Weather weather = restTemplate.getForObject(url + location, Weather.class);
+            Weather weather = restTemplate.getForObject("http://" + url + "/weather?location=" + location, Weather.class);
             return new ResponseEntity(weather, HttpStatus.OK);
         }
         return new ResponseEntity(null, HttpStatus.NOT_FOUND);
